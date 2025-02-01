@@ -1,4 +1,3 @@
-import React from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { processText } from "../lib/api"
@@ -11,30 +10,30 @@ import { ActionButtonWithSelect } from "@/components/action-button-with-select"
 import { templates } from "@/template"
 import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
-import useSWRMutation from 'swr/mutation'
+import { useState } from "react"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
   const [outputText, setOutputText] = useAtom(outputTextAtom)
+  const [isProcessing, setIsProcessing] = useState(false)
   const [apiKey, setApiKey] = useAtom(apiKeyAtom)
   const [model, setModel] = useAtom(modelAtom)
 
-  const { trigger, isMutating } = useSWRMutation('process-text', (key, { arg }: { arg: [string, string, string] }) => {
-    const [inputTextParam, apiKeyParam, modelParam] = arg;
-    return processText(inputTextParam, apiKeyParam, modelParam);
-  });
-
   async function handleAction(inputTextParam?: string) {
-    const text = inputTextParam || inputText;
-    if (!text) return;
+    if (!inputTextParam) return;
     if (!apiKey) {
       setOutputText("Please enter an API key first.");
       return;
     }
 
     try {
-      const result = await trigger([text, apiKey, model]);
-      setOutputText(result);
+      setOutputText("")
+      setIsProcessing(true)
+      const result = processText(inputTextParam + "\n" + "Please do not add any other text, just the generated text.", apiKey, model);
+      for await (const chunk of result.textStream) {
+        setOutputText((prev) => prev + chunk)
+      }
+      setIsProcessing(false)
     } catch (error) {
       console.error("Error processing text:", error);
       setOutputText("An error occurred while processing your request.");
@@ -62,10 +61,10 @@ export default function AIEditor() {
                   <ActionButtonWithSelect
                     key={template.title}
                     options={[...template.options]}
-                    storageKey={`selected-${template.title}`}
+                    storageKey={`select-${template.title}`}
                     buttonText={template.title}
                     icon={template.Icon ? <template.Icon /> : null}
-                    isProcessing={isMutating}
+                    isProcessing={isProcessing}
                     onAction={(value) => handleAction(template.applyTemplate(inputText, value))}
                     disabled={!inputText}
                   />
@@ -75,10 +74,10 @@ export default function AIEditor() {
                   <Button
                     key={template.title}
                     onClick={() => handleAction(template.applyTemplate(inputText))}
-                    disabled={!inputText || isMutating}
+                    disabled={!inputText || isProcessing}
                     variant="secondary"
                   >
-                    {isMutating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
+                    {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
                     {template.title}
                   </Button>
                 )
