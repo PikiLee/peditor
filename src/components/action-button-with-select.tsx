@@ -41,9 +41,10 @@ export function ActionButtonWithSelect({
   }, [selectedValue, storageKey])
 
   return (
-    <div className="flex gap-2">
+    <div className="inline-flex">
       <Select value={selectedValue} onValueChange={setSelectedValue}>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px] border border-gray-300 rounded-l-md rounded-r-none"
+          >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -54,7 +55,12 @@ export function ActionButtonWithSelect({
           ))}
         </SelectContent>
       </Select>
-      <Button onClick={() => onAction(selectedValue)} disabled={disabled || isProcessing} variant="secondary">
+      <Button 
+        onClick={() => onAction(selectedValue)} 
+        disabled={disabled || isProcessing} 
+        variant="secondary"
+        className="rounded-r-md rounded-l-none border border-gray-300 border-l-0"
+      >
         {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <span className="mr-2">{icon}</span>}
         {buttonText}
       </Button>
