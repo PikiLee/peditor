@@ -9,13 +9,15 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ActionButtonWithSelect } from "@/components/action-button-with-select"
 import { templates } from "@/template"
+import { useAtom } from "jotai"
+import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
 
 export default function AIEditor() {
-  const [inputText, setInputText] = useState("")
-  const [outputText, setOutputText] = useState("")
+  const [inputText, setInputText] = useAtom(inputTextAtom)
+  const [outputText, setOutputText] = useAtom(outputTextAtom)
   const [isProcessing, setIsProcessing] = useState(false)
-  const [apiKey, setApiKey] = useState("")
-  const [model, setModel] = useState("gpt-4")
+  const [apiKey, setApiKey] = useAtom(apiKeyAtom)
+  const [model, setModel] = useAtom(modelAtom)
 
   async function handleAction(inputText?: string) {
     if (!inputText) return

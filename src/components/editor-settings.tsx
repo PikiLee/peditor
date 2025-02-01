@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff } from "lucide-react"
+import { models } from "@/store/settings"
 
 interface EditorSettingsProps {
   apiKey: string
@@ -47,10 +48,9 @@ export function EditorSettings({ apiKey, model, onApiKeyChange, onModelChange }:
             <SelectValue placeholder="Select a model" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="gpt-4">GPT-4</SelectItem>
-            <SelectItem value="gpt-3.5-turbo">GPT-3.5 Turbo</SelectItem>
-            <SelectItem value="claude-2">Claude 2</SelectItem>
-            <SelectItem value="palm">PaLM</SelectItem>
+            {models.map((model) => (
+              <SelectItem key={model.value} value={model.value}>{model.label}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
