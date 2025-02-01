@@ -63,7 +63,7 @@ export default function AIEditor() {
                     buttonText={template.title}
                     icon={template.Icon ? <template.Icon /> : null}
                     isProcessing={isProcessing}
-                    onAction={(value) => handleAction(template.applyTemplate(value))}
+                    onAction={(value) => handleAction(template.applyTemplate(inputText, value))}
                     disabled={!inputText}
                   />
                 )
