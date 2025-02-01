@@ -38,7 +38,8 @@ export default function AIEditor() {
       setIsProcessing(false)
     } catch (error) {
       console.error("Error processing text:", error);
-      setOutputText("An error occurred while processing your request.");
+      setOutputText("An error occurred while processing your request. The error is: " + error);
+      setIsProcessing(false)
     }
   }
 
