@@ -1,7 +1,7 @@
-import { useState } from "react"
+import React from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { processText } from "../../actions"
+import { processText } from "../lib/api"
 import { Loader2, AlertCircle } from "lucide-react"
 import { EditorSettings } from "@/components/editor-settings"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -11,30 +11,33 @@ import { ActionButtonWithSelect } from "@/components/action-button-with-select"
 import { templates } from "@/template"
 import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
+import useSWRMutation from 'swr/mutation'
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
   const [outputText, setOutputText] = useAtom(outputTextAtom)
-  const [isProcessing, setIsProcessing] = useState(false)
   const [apiKey, setApiKey] = useAtom(apiKeyAtom)
   const [model, setModel] = useAtom(modelAtom)
 
-  async function handleAction(inputText?: string) {
-    if (!inputText) return
+  const { trigger, isMutating } = useSWRMutation('process-text', (key, { arg }: { arg: [string, string, string] }) => {
+    const [inputTextParam, apiKeyParam, modelParam] = arg;
+    return processText(inputTextParam, apiKeyParam, modelParam);
+  });
+
+  async function handleAction(inputTextParam?: string) {
+    const text = inputTextParam || inputText;
+    if (!text) return;
     if (!apiKey) {
-      setOutputText("Please enter an API key first.")
-      return
+      setOutputText("Please enter an API key first.");
+      return;
     }
 
-    setIsProcessing(true)
     try {
-      const result = await processText(inputText)
-      setOutputText(result)
+      const result = await trigger([text, apiKey, model]);
+      setOutputText(result);
     } catch (error) {
-      console.error("Error processing text:", error)
-      setOutputText("An error occurred while processing your request.")
-    } finally {
-      setIsProcessing(false)
+      console.error("Error processing text:", error);
+      setOutputText("An error occurred while processing your request.");
     }
   }
 
@@ -62,7 +65,7 @@ export default function AIEditor() {
                     storageKey={`selected-${template.title}`}
                     buttonText={template.title}
                     icon={template.Icon ? <template.Icon /> : null}
-                    isProcessing={isProcessing}
+                    isProcessing={isMutating}
                     onAction={(value) => handleAction(template.applyTemplate(inputText, value))}
                     disabled={!inputText}
                   />
@@ -72,10 +75,10 @@ export default function AIEditor() {
                   <Button
                     key={template.title}
                     onClick={() => handleAction(template.applyTemplate(inputText))}
-                    disabled={!inputText || isProcessing}
+                    disabled={!inputText || isMutating}
                     variant="secondary"
                   >
-                    {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
+                    {isMutating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
                     {template.title}
                   </Button>
                 )
