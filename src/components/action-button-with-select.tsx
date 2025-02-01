@@ -43,7 +43,7 @@ export function ActionButtonWithSelect({
   return (
     <div className="inline-flex">
       <Select value={selectedValue} onValueChange={setSelectedValue}>
-        <SelectTrigger className="w-[180px] border border-gray-300 rounded-l-md rounded-r-none"
+        <SelectTrigger className="w-[180px] border border-gray-300 rounded-l-md rounded-r-none focus:ring-0"
           >
           <SelectValue />
         </SelectTrigger>
