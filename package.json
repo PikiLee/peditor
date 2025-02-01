@@ -12,6 +12,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.1.9",
     "@radix-ui/react-select": "^2.1.5",
+    "@radix-ui/react-slider": "^1.2.2",
     "@radix-ui/react-slot": "^1.1.1",
     "ai": "^4.1.16",
     "class-variance-authority": "^0.7.1",
