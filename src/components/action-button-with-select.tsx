@@ -6,7 +6,7 @@ import type React from "react" // Added import for React
 
 interface Option {
   value: string
-  label: string
+  title: string
 }
 
 interface ActionButtonWithSelectProps {
@@ -48,7 +48,7 @@ export function ActionButtonWithSelect({
         <SelectContent>
           {options.map((option) => (
             <SelectItem key={option.value} value={option.value}>
-              {option.label}
+              {option.title}
             </SelectItem>
           ))}
         </SelectContent>

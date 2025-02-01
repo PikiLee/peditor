@@ -2,13 +2,13 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { processText } from "../../actions"
-import { Loader2, Wand2, Reply, Languages, FileText, AlertCircle } from "lucide-react"
+import { Loader2, AlertCircle } from "lucide-react"
 import { EditorSettings } from "@/components/editor-settings"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ActionButtonWithSelect } from "@/components/action-button-with-select"
-import { LANGUAGES, TONES } from "../../constants"
+import { templates } from "@/template"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useState("")
@@ -17,7 +17,7 @@ export default function AIEditor() {
   const [apiKey, setApiKey] = useState("")
   const [model, setModel] = useState("gpt-4")
 
-  async function handleAction(action: string, value?: string) {
+  async function handleAction(inputText?: string) {
     if (!inputText) return
     if (!apiKey) {
       setOutputText("Please enter an API key first.")
@@ -26,7 +26,7 @@ export default function AIEditor() {
 
     setIsProcessing(true)
     try {
-      const result = await processText(inputText, action, value)
+      const result = await processText(inputText)
       setOutputText(result)
     } catch (error) {
       console.error("Error processing text:", error)
@@ -51,39 +51,34 @@ export default function AIEditor() {
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4">
-            <ActionButtonWithSelect
-              options={TONES}
-              storageKey="selectedTone"
-              buttonText="Change Tone"
-              icon={<Wand2 className="h-4 w-4" />}
-              isProcessing={isProcessing}
-              onAction={(value) => handleAction("change-tone", value)}
-              disabled={!inputText}
-            />
-
-            <ActionButtonWithSelect
-              options={LANGUAGES}
-              storageKey="selectedLanguage"
-              buttonText="Translate"
-              icon={<Languages className="h-4 w-4" />}
-              isProcessing={isProcessing}
-              onAction={(value) => handleAction("translate", value)}
-              disabled={!inputText}
-            />
-
-            <Button
-              onClick={() => handleAction("compose-reply")}
-              disabled={!inputText || isProcessing}
-              variant="secondary"
-            >
-              {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Reply className="mr-2 h-4 w-4" />}
-              Compose Reply
-            </Button>
-
-            <Button onClick={() => handleAction("summarize")} disabled={!inputText || isProcessing} variant="secondary">
-              {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <FileText className="mr-2 h-4 w-4" />}
-              Summarize
-            </Button>
+            {templates.map((template) => {
+              if (template.type === 'group') {
+                return (
+                  <ActionButtonWithSelect
+                    key={template.title}
+                    options={[...template.options]}
+                    storageKey={`selected-${template.title}`}
+                    buttonText={template.title}
+                    icon={template.Icon ? <template.Icon /> : null}
+                    isProcessing={isProcessing}
+                    onAction={(value) => handleAction(template.applyTemplate(value))}
+                    disabled={!inputText}
+                  />
+                )
+              } else {
+                return (
+                  <Button
+                    key={template.title}
+                    onClick={() => handleAction(template.applyTemplate(inputText))}
+                    disabled={!inputText || isProcessing}
+                    variant="secondary"
+                  >
+                    {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
+                    {template.title}
+                  </Button>
+                )
+              }
+            })}
           </div>
 
           {/* Editor Area */}
@@ -105,7 +100,7 @@ export default function AIEditor() {
             <div className="space-y-2 h-full">
               <h2 className="text-lg font-semibold">Output</h2>
               {!apiKey && (
-                <Alert variant="warning" className="mb-4">
+                <Alert variant="default" className="mb-4">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>Please enter an API key to use the AI features.</AlertDescription>
                 </Alert>
