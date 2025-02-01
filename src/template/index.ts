@@ -4,6 +4,7 @@ import { reply } from './reply'
 import { tones } from './tone'
 import { explanation } from './explanation'
 import { copyWriting } from './copy-writing'
+import { translate } from './translate'
 
 export const templates = [
   tones,
@@ -12,4 +13,5 @@ export const templates = [
   reply,
   explanation,
   copyWriting,
+  translate,
 ]
