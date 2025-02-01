@@ -1,9 +1,7 @@
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { processText } from "../lib/api"
-import { Loader2, AlertCircle } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { EditorSettings } from "@/components/editor-settings"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ActionButtonWithSelect } from "@/components/action-button-with-select"
@@ -12,6 +10,7 @@ import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
 import { useState } from "react"
 import { temperatureAtom } from "@/store/settings"
+import { EditorArea } from "@/components/editor-area"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
@@ -95,40 +94,12 @@ export default function AIEditor() {
             })}
           </div>
 
-          {/* Editor Area */}
-          <div className="grid md:grid-cols-2 gap-4">
-            {/* Input Column */}
-            <div className="space-y-2 h-full">
-              <h2 className="text-lg font-semibold">Input</h2>
-              <div className="h-[calc(100%-2rem)]">
-                <Textarea
-                  placeholder="Enter your text here..."
-                  className="h-full min-h-[400px] resize-none"
-                  value={inputText}
-                  onChange={(e) => setInputText(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Output Column */}
-            <div className="space-y-2 h-full">
-              <h2 className="text-lg font-semibold">Output</h2>
-              {!apiKey && (
-                <Alert variant="default" className="mb-4">
-                  <AlertCircle className="h-4 w-4" />
-                  <AlertDescription>Please enter an API key to use the AI features.</AlertDescription>
-                </Alert>
-              )}
-              <div className="h-[calc(100%-2rem)]">
-                <Textarea
-                  placeholder="AI generated text will appear here..."
-                  className="h-full min-h-[400px] resize-none"
-                  value={outputText}
-                  readOnly
-                />
-              </div>
-            </div>
-          </div>
+          <EditorArea
+            inputText={inputText}
+            outputText={outputText}
+            apiKey={apiKey}
+            onInputChange={setInputText}
+          />
         </div>
       </div>
     </ThemeProvider>
