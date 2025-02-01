@@ -1,16 +1,13 @@
-import { Button } from "@/components/ui/button"
 import { processText } from "../lib/api"
-import { Loader2 } from "lucide-react"
 import { EditorSettings } from "@/components/editor-settings"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { ThemeProvider } from "@/components/theme-provider"
-import { ActionButtonWithSelect } from "@/components/action-button-with-select"
-import { templates } from "@/template"
 import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
 import { useState } from "react"
 import { temperatureAtom } from "@/store/settings"
 import { EditorArea } from "@/components/editor-area"
+import { EditorActions } from "@/components/editor-actions"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
@@ -62,37 +59,11 @@ export default function AIEditor() {
             onTemperatureChange={setTemperature}
           />
 
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4">
-            {templates.map((template) => {
-              if (template.type === 'group') {
-                return (
-                  <ActionButtonWithSelect
-                    key={template.title}
-                    options={[...template.options]}
-                    storageKey={`select-${template.title}`}
-                    buttonText={template.title}
-                    icon={template.Icon ? <template.Icon /> : null}
-                    isProcessing={isProcessing}
-                    onAction={(value) => handleAction(template.applyTemplate(inputText, value))}
-                    disabled={!inputText}
-                  />
-                )
-              } else {
-                return (
-                  <Button
-                    key={template.title}
-                    onClick={() => handleAction(template.applyTemplate(inputText))}
-                    disabled={!inputText || isProcessing}
-                    variant="secondary"
-                  >
-                    {isProcessing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (template.Icon ? <template.Icon /> : null)}
-                    {template.title}
-                  </Button>
-                )
-              }
-            })}
-          </div>
+          <EditorActions
+            isProcessing={isProcessing}
+            inputText={inputText}
+            onAction={handleAction}
+          />
 
           <EditorArea
             inputText={inputText}
