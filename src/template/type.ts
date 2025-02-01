@@ -2,7 +2,7 @@ import { FunctionComponent } from "react"
 
 export interface BaseTemplate {
   type: 'single' | 'group' // whether the button is a single button or a select
-  Icon?: FunctionComponent // the icon of the button
+  Icon: FunctionComponent // the icon of the button
   title: string // the title of the button
 }
 

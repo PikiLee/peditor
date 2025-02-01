@@ -1,4 +1,5 @@
 import type { Template } from './type'
+import { Info } from 'lucide-react'
 
 const applyTemplate = (input: string) => {
   return `Your task is to perform the following actions:
@@ -25,5 +26,6 @@ const applyTemplate = (input: string) => {
 export const explanation: Template = {
   type: 'single',
   title: 'Explain the phrase',
+  Icon: Info,
   applyTemplate,
 }

@@ -1,3 +1,4 @@
+import { Pen } from 'lucide-react'
 import type { Template } from './type'
 
 const applyTemplate = (input: string) => {
@@ -19,5 +20,6 @@ const applyTemplate = (input: string) => {
 export const copyWriting: Template = {
   type: 'single',
   title: 'Copy writing',
+  Icon: Pen,
   applyTemplate,
 }

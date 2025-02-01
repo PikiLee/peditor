@@ -1,4 +1,5 @@
 import type { Template } from './type'
+import { Lightbulb } from 'lucide-react'
 
 const applyTemplate = (input: string) => {
   return `Your task is to perform the following actions:
@@ -36,5 +37,6 @@ const applyTemplate = (input: string) => {
 export const ideas: Template = {
   type: 'single',
   title: 'Come up with ideas',
+  Icon: Lightbulb,
   applyTemplate,
 }

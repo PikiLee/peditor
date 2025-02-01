@@ -1,4 +1,5 @@
 import type { Template } from './type'
+import { AlertTriangle } from 'lucide-react'
 
 const applyTemplate = (input: string) => {
   return `Your task is to perform the following actions:
@@ -38,5 +39,6 @@ const applyTemplate = (input: string) => {
 export const error: Template = {
   type: 'single',
   title: 'Find causes for the error',
+  Icon: AlertTriangle,
   applyTemplate,
 }
