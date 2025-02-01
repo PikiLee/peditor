@@ -8,6 +8,8 @@ export const inputTextAtom = atomWithStorage<string>("inputText", "")
 
 export const outputTextAtom = atomWithStorage<string>("outputText", "")
 
+export const temperatureAtom = atomWithStorage<number>("temperature", 0.7)
+
 export const models: { value: OpenAIChatModelId; label: string }[] = [
     {
       value: 'gpt-4o',

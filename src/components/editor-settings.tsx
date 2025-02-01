@@ -4,23 +4,24 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Eye, EyeOff } from "lucide-react"
 import { models } from "@/store/settings"
+import { Slider } from "@/components/ui/slider"
 
 interface EditorSettingsProps {
   apiKey: string
   model: string
+  temperature: number
   onApiKeyChange: (key: string) => void
   onModelChange: (model: string) => void
+  onTemperatureChange: (temp: number) => void
 }
 
-export function EditorSettings({ apiKey, model, onApiKeyChange, onModelChange }: EditorSettingsProps) {
+export function EditorSettings({ apiKey, model, temperature, onApiKeyChange, onModelChange, onTemperatureChange }: EditorSettingsProps) {
   const [showApiKey, setShowApiKey] = useState(false)
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted rounded-lg">
-      <div className="flex-1 space-y-2">
-        <label htmlFor="apiKey" className="text-sm font-medium">
-          API Key
-        </label>
+    <div className="grid md:grid-cols-3 gap-4 p-4 bg-muted rounded-lg">
+      <div className="space-y-2">
+        <label htmlFor="apiKey" className="text-sm font-medium">API Key</label>
         <div className="relative">
           <Input
             id="apiKey"
@@ -41,7 +42,8 @@ export function EditorSettings({ apiKey, model, onApiKeyChange, onModelChange }:
           </Button>
         </div>
       </div>
-      <div className="flex-1 space-y-2">
+
+      <div className="space-y-2">
         <label className="text-sm font-medium">Model</label>
         <Select value={model} onValueChange={onModelChange}>
           <SelectTrigger>
@@ -53,6 +55,18 @@ export function EditorSettings({ apiKey, model, onApiKeyChange, onModelChange }:
             ))}
           </SelectContent>
         </Select>
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="temperature" className="text-sm font-medium">Temperature</label>
+        <Slider
+          value={[temperature]}
+          onValueChange={(value) => onTemperatureChange(value[0])}
+          min={0}
+          max={1}
+          step={0.01}
+        />
+        <div className="text-xs text-muted-foreground">Value: {temperature}</div>
       </div>
     </div>
   )

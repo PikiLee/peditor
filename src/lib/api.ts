@@ -1,7 +1,7 @@
 import { createOpenAI } from "@ai-sdk/openai"
 import { streamText } from "ai"
 
-export function processText(prompt: string, apiKey?: string, model?: string) {
+export function processText(prompt: string, apiKey?: string, model?: string, temperature?: number) {
   if (!apiKey) {
     throw new Error("API key is required")
   }
@@ -13,6 +13,7 @@ export function processText(prompt: string, apiKey?: string, model?: string) {
     const result = streamText({
       model: openai(model || "gpt-4o-mini"),
       prompt: prompt,
+      temperature: temperature,
     })
 
     return result

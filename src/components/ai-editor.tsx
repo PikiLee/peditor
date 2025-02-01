@@ -11,6 +11,7 @@ import { templates } from "@/template"
 import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
 import { useState } from "react"
+import { temperatureAtom } from "@/store/settings"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
@@ -18,6 +19,7 @@ export default function AIEditor() {
   const [isProcessing, setIsProcessing] = useState(false)
   const [apiKey, setApiKey] = useAtom(apiKeyAtom)
   const [model, setModel] = useAtom(modelAtom)
+  const [temperature, setTemperature] = useAtom(temperatureAtom)
 
   async function handleAction(inputTextParam?: string) {
     if (!inputTextParam) return;
@@ -29,7 +31,7 @@ export default function AIEditor() {
     try {
       setOutputText("")
       setIsProcessing(true)
-      const result = processText(inputTextParam + "\n" + "Please do not add any other text, just the generated text.", apiKey, model);
+      const result = processText(inputTextParam + "\n" + "Please do not add any other text, just the generated text.", apiKey, model, temperature);
       for await (const chunk of result.textStream) {
         setOutputText((prev) => prev + chunk)
       }
@@ -51,7 +53,14 @@ export default function AIEditor() {
           </div>
 
           {/* Settings Section */}
-          <EditorSettings apiKey={apiKey} model={model} onApiKeyChange={setApiKey} onModelChange={setModel} />
+          <EditorSettings
+            apiKey={apiKey}
+            model={model}
+            temperature={temperature}
+            onApiKeyChange={setApiKey}
+            onModelChange={setModel}
+            onTemperatureChange={setTemperature}
+          />
 
           {/* Action Buttons */}
           <div className="flex flex-wrap gap-4">
