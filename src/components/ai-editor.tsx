@@ -1,6 +1,5 @@
 import { processText } from "../lib/api"
 import { EditorSettings } from "@/components/editor-settings"
-import { ThemeToggle } from "@/components/theme-toggle"
 import { ThemeProvider } from "@/components/theme-provider"
 import { useAtom } from "jotai"
 import { inputTextAtom, outputTextAtom, modelAtom, apiKeyAtom } from "@/store/settings"
@@ -8,6 +7,7 @@ import { useState } from "react"
 import { temperatureAtom } from "@/store/settings"
 import { EditorArea } from "@/components/editor-area"
 import { EditorActions } from "@/components/editor-actions"
+import { EditorHeader } from "@/components/editor-header"
 
 export default function AIEditor() {
   const [inputText, setInputText] = useAtom(inputTextAtom)
@@ -44,10 +44,7 @@ export default function AIEditor() {
       <div className="min-h-screen bg-background text-foreground">
         <div className="container mx-auto p-4 space-y-6 max-w-6xl">
           {/* Header with Theme Toggle */}
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold">AI Editor</h1>
-            <ThemeToggle />
-          </div>
+          <EditorHeader />
 
           {/* Settings Section */}
           <EditorSettings
