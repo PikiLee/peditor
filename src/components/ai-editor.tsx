@@ -5,7 +5,7 @@ import { useAtom } from "jotai"
 import { inputTextAtom, outputTextsAtom, modelAtom, apiKeyAtom, currentOutputIndexAtom } from "@/store/settings"
 import { useState } from "react"
 import { temperatureAtom } from "@/store/settings"
-import { EditorArea } from "@/components/editor-area"
+import { EditorArea } from "@/components/editor-area/editor-area"
 import { EditorActions } from "@/components/editor-actions"
 import { EditorHeader } from "@/components/editor-header"
 

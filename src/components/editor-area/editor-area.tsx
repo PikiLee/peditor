@@ -3,9 +3,9 @@ import { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { toast } from "@/hooks/use-toast"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { InputArea } from "./editor/input-area"
-import { OutputArea } from "./editor/output-area"
-import { MoveToInputButton } from "./editor/move-to-input-button"
+import { InputArea } from "./input-area"
+import { OutputArea } from "./output-area"
+import { MoveToInputButton } from "./move-to-input-button"
 
 interface IEditorArea extends ComponentProps<"div"> {
   inputText: string
