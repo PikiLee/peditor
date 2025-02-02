@@ -35,6 +35,16 @@ export const EditorArea = forwardRef<HTMLDivElement, ComponentProps<"div">>(
 
     const handleMoveToInput = () => {
       if (outputText) {
+        const isDuplicate = inputTexts.includes(outputText)
+        
+        if (isDuplicate) {
+          toast({
+            description: "This text is already in your inputs",
+            duration: 2000,
+          })
+          return
+        }
+
         const newInputs = [...inputTexts, outputText]
         setInputTexts(newInputs)
         setCurrentInputIndex(newInputs.length - 1)
