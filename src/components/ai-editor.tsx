@@ -28,6 +28,11 @@ export default function AIEditor() {
     }
   }
 
+  const handleClearHistory = () => {
+    setOutputTexts([])
+    setCurrentOutputIndex(-1)
+  }
+
   async function handleAction(inputTextParam?: string) {
     if (!inputTextParam) return;
     if (!apiKey) {
@@ -94,6 +99,7 @@ export default function AIEditor() {
             apiKey={apiKey}
             onInputChange={setInputText}
             onNavigateOutput={handleNavigateOutput}
+            onClearHistory={handleClearHistory}
             canNavigatePrev={currentOutputIndex > 0}
             canNavigateNext={currentOutputIndex < outputTexts.length - 1}
             outputCount={outputTexts.length}

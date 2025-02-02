@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Copy, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
+import { AlertCircle, Copy, ArrowLeft, ChevronLeft, ChevronRight, Trash2 } from "lucide-react"
 import { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -13,6 +13,7 @@ interface IEditorArea extends ComponentProps<"div"> {
   apiKey?: string
   onInputChange: (value: string) => void
   onNavigateOutput: (direction: 'prev' | 'next') => void
+  onClearHistory: () => void
   canNavigatePrev: boolean
   canNavigateNext: boolean
   outputCount: number
@@ -26,6 +27,7 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
     apiKey, 
     onInputChange, 
     onNavigateOutput,
+    onClearHistory,
     canNavigatePrev,
     canNavigateNext,
     outputCount,
@@ -57,6 +59,14 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
           duration: 2000,
         })
       }
+    }
+
+    const handleClearHistory = () => {
+      onClearHistory()
+      toast({
+        description: "Output history cleared",
+        duration: 2000,
+      })
     }
 
     return (
@@ -124,6 +134,15 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
                   disabled={!outputText}
                 >
                   <Copy className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 px-0"
+                  onClick={handleClearHistory}
+                  disabled={outputCount === 0}
+                >
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             </div>
