@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 import { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
-import { Copy, ChevronLeft, ChevronRight, Trash2 } from "lucide-react"
+import { Copy, ChevronLeft, ChevronRight, Trash2, Plus } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { EditorToolbarButton } from "./editor-toolbar-button"
 import { useAtom } from "jotai"
@@ -46,6 +46,12 @@ export const InputArea = forwardRef<HTMLDivElement, IInputArea & Omit<ComponentP
       setCurrentInputIndex(-1)
     }
 
+    const handleNewInput = () => {
+      const newInputs = [...inputTexts, ""]
+      setInputTexts(newInputs)
+      setCurrentInputIndex(newInputs.length - 1)
+    }
+
     return (
       <div ref={ref} className={cn("space-y-2 h-full", className)} {...props}>
         <div className="flex items-center justify-between">
@@ -58,6 +64,12 @@ export const InputArea = forwardRef<HTMLDivElement, IInputArea & Omit<ComponentP
             )}
           </div>
           <div className="flex items-center gap-2">
+            <EditorToolbarButton
+              tooltipContent="New input"
+              icon={<Plus className="h-4 w-4" />}
+              onClick={handleNewInput}
+              className="h-8 w-8 px-0"
+            />
             <EditorToolbarButton
               tooltipContent="Previous input"
               icon={<ChevronLeft className="h-4 w-4" />}
