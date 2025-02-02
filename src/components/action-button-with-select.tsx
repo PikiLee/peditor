@@ -34,7 +34,6 @@ export function ActionButtonWithSelect({
     }
     return options[0].value
   })
-  console.log('selectedValue', storageKey, selectedValue)
 
   useEffect(() => {
     localStorage.setItem(storageKey, selectedValue)
