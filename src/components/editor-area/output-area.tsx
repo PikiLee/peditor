@@ -5,34 +5,38 @@ import { AlertCircle, Copy, ChevronLeft, ChevronRight, Trash2 } from "lucide-rea
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { EditorToolbarButton } from "./editor-toolbar-button"
+import { useAtom } from "jotai"
+import { apiKeyAtom, outputTextsAtom, currentOutputIndexAtom } from "@/store/settings"
 
 interface IOutputArea {
-  outputText: string
-  apiKey?: string
   onCopy: (text: string, type: "input" | "output") => void
-  onNavigateOutput: (direction: 'prev' | 'next') => void
-  onClearHistory: () => void
-  canNavigatePrev: boolean
-  canNavigateNext: boolean
-  outputCount: number
-  currentOutputIndex: number
   className?: string
 }
 
 export const OutputArea = forwardRef<HTMLDivElement, IOutputArea & Omit<ComponentProps<"div">, keyof IOutputArea>>(
-  ({ 
-    outputText, 
-    apiKey,
-    onCopy,
-    onNavigateOutput,
-    onClearHistory,
-    canNavigatePrev,
-    canNavigateNext,
-    outputCount,
-    currentOutputIndex,
-    className,
-    ...props 
-  }, ref) => {
+  ({ onCopy, className, ...props }, ref) => {
+    const [apiKey] = useAtom(apiKeyAtom)
+    const [outputTexts, setOutputTexts] = useAtom(outputTextsAtom)
+    const [currentOutputIndex, setCurrentOutputIndex] = useAtom(currentOutputIndexAtom)
+
+    const outputText = currentOutputIndex >= 0 ? outputTexts[currentOutputIndex] : ""
+    const outputCount = outputTexts.length
+    const canNavigatePrev = currentOutputIndex > 0
+    const canNavigateNext = currentOutputIndex < outputCount - 1
+
+    const handleNavigateOutput = (direction: 'prev' | 'next') => {
+      if (direction === 'prev' && canNavigatePrev) {
+        setCurrentOutputIndex(currentOutputIndex - 1)
+      } else if (direction === 'next' && canNavigateNext) {
+        setCurrentOutputIndex(currentOutputIndex + 1)
+      }
+    }
+
+    const handleClearHistory = () => {
+      setOutputTexts([])
+      setCurrentOutputIndex(-1)
+    }
+
     return (
       <div ref={ref} className={cn("space-y-2 h-full", className)} {...props}>
         <div className="flex items-center justify-between">
@@ -48,14 +52,14 @@ export const OutputArea = forwardRef<HTMLDivElement, IOutputArea & Omit<Componen
             <EditorToolbarButton
               tooltipContent="Previous output"
               icon={<ChevronLeft className="h-4 w-4" />}
-              onClick={() => onNavigateOutput('prev')}
+              onClick={() => handleNavigateOutput('prev')}
               disabled={!canNavigatePrev}
               className="h-8 w-8 px-0"
             />
             <EditorToolbarButton
               tooltipContent="Next output"
               icon={<ChevronRight className="h-4 w-4" />}
-              onClick={() => onNavigateOutput('next')}
+              onClick={() => handleNavigateOutput('next')}
               disabled={!canNavigateNext}
               className="h-8 w-8 px-0"
             />
@@ -68,7 +72,7 @@ export const OutputArea = forwardRef<HTMLDivElement, IOutputArea & Omit<Componen
             <EditorToolbarButton
               tooltipContent="Clear history"
               icon={<Trash2 className="h-4 w-4" />}
-              onClick={onClearHistory}
+              onClick={handleClearHistory}
               disabled={outputCount === 0}
               className="h-8 w-8 px-0"
             />

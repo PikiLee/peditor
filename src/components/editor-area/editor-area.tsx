@@ -6,47 +6,17 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { InputArea } from "./input-area"
 import { OutputArea } from "./output-area"
 import { MoveToInputButton } from "./move-to-input-button"
+import { useAtom } from "jotai"
+import { outputTextsAtom, currentOutputIndexAtom, inputTextsAtom, currentInputIndexAtom } from "@/store/settings"
 
-interface IEditorArea extends ComponentProps<"div"> {
-  inputText: string
-  outputText: string
-  apiKey?: string
-  onInputChange: (value: string) => void
-  onNavigateInput: (direction: 'prev' | 'next') => void
-  onNavigateOutput: (direction: 'prev' | 'next') => void
-  onClearHistory: () => void
-  onClearInputHistory: () => void
-  canNavigatePrev: boolean
-  canNavigateNext: boolean
-  canInputNavigatePrev: boolean
-  canInputNavigateNext: boolean
-  outputCount: number
-  currentOutputIndex: number
-  inputCount: number
-  currentInputIndex: number
-}
+export const EditorArea = forwardRef<HTMLDivElement, ComponentProps<"div">>(
+  ({ className, ...props }, ref) => {
+    const [outputTexts] = useAtom(outputTextsAtom)
+    const [currentOutputIndex] = useAtom(currentOutputIndexAtom)
+    const [inputTexts, setInputTexts] = useAtom(inputTextsAtom)
+    const [, setCurrentInputIndex] = useAtom(currentInputIndexAtom)
+    const outputText = currentOutputIndex >= 0 ? outputTexts[currentOutputIndex] : ""
 
-export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
-  ({ 
-    inputText, 
-    outputText, 
-    apiKey, 
-    onInputChange, 
-    onNavigateInput,
-    onNavigateOutput,
-    onClearHistory,
-    onClearInputHistory,
-    canNavigatePrev,
-    canNavigateNext,
-    canInputNavigatePrev,
-    canInputNavigateNext,
-    outputCount,
-    currentOutputIndex,
-    inputCount,
-    currentInputIndex,
-    className, 
-    ...props 
-  }, ref) => {
     const handleCopy = async (text: string, type: "input" | "output") => {
       try {
         await navigator.clipboard.writeText(text)
@@ -65,7 +35,9 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
 
     const handleMoveToInput = () => {
       if (outputText) {
-        onInputChange(outputText)
+        const newInputs = [...inputTexts, outputText]
+        setInputTexts(newInputs)
+        setCurrentInputIndex(newInputs.length - 1)
         toast({
           description: "Output text moved to input",
           duration: 2000,
@@ -77,28 +49,8 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
       <TooltipProvider>
         <div className="relative">
           <div ref={ref} className={cn("grid md:grid-cols-2 gap-4", className)} {...props}>
-            <InputArea
-              inputText={inputText}
-              onInputChange={onInputChange}
-              onCopy={handleCopy}
-              onNavigateInput={onNavigateInput}
-              onClearInputHistory={onClearInputHistory}
-              canNavigatePrev={canInputNavigatePrev}
-              canNavigateNext={canInputNavigateNext}
-              inputCount={inputCount}
-              currentInputIndex={currentInputIndex}
-            />
-            <OutputArea
-              outputText={outputText}
-              apiKey={apiKey}
-              onCopy={handleCopy}
-              onNavigateOutput={onNavigateOutput}
-              onClearHistory={onClearHistory}
-              canNavigatePrev={canNavigatePrev}
-              canNavigateNext={canNavigateNext}
-              outputCount={outputCount}
-              currentOutputIndex={currentOutputIndex}
-            />
+            <InputArea onCopy={handleCopy} />
+            <OutputArea onCopy={handleCopy} />
           </div>
           <MoveToInputButton
             onClick={handleMoveToInput}
