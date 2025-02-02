@@ -1,7 +1,7 @@
 import { forwardRef } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, Copy, ArrowLeft } from "lucide-react"
+import { AlertCircle, Copy, ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react"
 import { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -12,10 +12,27 @@ interface IEditorArea extends ComponentProps<"div"> {
   outputText: string
   apiKey?: string
   onInputChange: (value: string) => void
+  onNavigateOutput: (direction: 'prev' | 'next') => void
+  canNavigatePrev: boolean
+  canNavigateNext: boolean
+  outputCount: number
+  currentOutputIndex: number
 }
 
 export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
-  ({ inputText, outputText, apiKey, onInputChange, className, ...props }, ref) => {
+  ({ 
+    inputText, 
+    outputText, 
+    apiKey, 
+    onInputChange, 
+    onNavigateOutput,
+    canNavigatePrev,
+    canNavigateNext,
+    outputCount,
+    currentOutputIndex,
+    className, 
+    ...props 
+  }, ref) => {
     const handleCopy = async (text: string, type: "input" | "output") => {
       try {
         await navigator.clipboard.writeText(text)
@@ -72,16 +89,43 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
           {/* Output Column */}
           <div className="space-y-2 h-full">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Output</h2>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 px-2"
-                onClick={() => handleCopy(outputText, "output")}
-                disabled={!outputText}
-              >
-                <Copy className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg font-semibold">Output</h2>
+                {outputCount > 0 && (
+                  <span className="text-sm text-muted-foreground">
+                    {currentOutputIndex + 1}/{outputCount}
+                  </span>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 px-0"
+                  onClick={() => onNavigateOutput('prev')}
+                  disabled={!canNavigatePrev}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 w-8 px-0"
+                  onClick={() => onNavigateOutput('next')}
+                  disabled={!canNavigateNext}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-8 px-2"
+                  onClick={() => handleCopy(outputText, "output")}
+                  disabled={!outputText}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             {!apiKey && (
               <Alert variant="default" className="mb-4">
