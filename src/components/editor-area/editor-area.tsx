@@ -12,12 +12,18 @@ interface IEditorArea extends ComponentProps<"div"> {
   outputText: string
   apiKey?: string
   onInputChange: (value: string) => void
+  onNavigateInput: (direction: 'prev' | 'next') => void
   onNavigateOutput: (direction: 'prev' | 'next') => void
   onClearHistory: () => void
+  onClearInputHistory: () => void
   canNavigatePrev: boolean
   canNavigateNext: boolean
+  canInputNavigatePrev: boolean
+  canInputNavigateNext: boolean
   outputCount: number
   currentOutputIndex: number
+  inputCount: number
+  currentInputIndex: number
 }
 
 export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
@@ -26,12 +32,18 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
     outputText, 
     apiKey, 
     onInputChange, 
+    onNavigateInput,
     onNavigateOutput,
     onClearHistory,
+    onClearInputHistory,
     canNavigatePrev,
     canNavigateNext,
+    canInputNavigatePrev,
+    canInputNavigateNext,
     outputCount,
     currentOutputIndex,
+    inputCount,
+    currentInputIndex,
     className, 
     ...props 
   }, ref) => {
@@ -69,6 +81,12 @@ export const EditorArea = forwardRef<HTMLDivElement, IEditorArea>(
               inputText={inputText}
               onInputChange={onInputChange}
               onCopy={handleCopy}
+              onNavigateInput={onNavigateInput}
+              onClearInputHistory={onClearInputHistory}
+              canNavigatePrev={canInputNavigatePrev}
+              canNavigateNext={canInputNavigateNext}
+              inputCount={inputCount}
+              currentInputIndex={currentInputIndex}
             />
             <OutputArea
               outputText={outputText}

@@ -2,7 +2,7 @@ import { processText } from "../lib/api"
 import { EditorSettings } from "@/components/editor-settings"
 import { ThemeProvider } from "@/components/theme-provider"
 import { useAtom } from "jotai"
-import { inputTextAtom, outputTextsAtom, modelAtom, apiKeyAtom, currentOutputIndexAtom } from "@/store/settings"
+import { inputTextsAtom, currentInputIndexAtom, outputTextsAtom, modelAtom, apiKeyAtom, currentOutputIndexAtom } from "@/store/settings"
 import { useState } from "react"
 import { temperatureAtom } from "@/store/settings"
 import { EditorArea } from "@/components/editor-area/editor-area"
@@ -10,7 +10,8 @@ import { EditorActions } from "@/components/editor-actions"
 import { EditorHeader } from "@/components/editor-header"
 
 export default function AIEditor() {
-  const [inputText, setInputText] = useAtom(inputTextAtom)
+  const [inputTexts, setInputTexts] = useAtom(inputTextsAtom)
+  const [currentInputIndex, setCurrentInputIndex] = useAtom(currentInputIndexAtom)
   const [outputTexts, setOutputTexts] = useAtom(outputTextsAtom)
   const [currentOutputIndex, setCurrentOutputIndex] = useAtom(currentOutputIndexAtom)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -18,7 +19,29 @@ export default function AIEditor() {
   const [model, setModel] = useAtom(modelAtom)
   const [temperature, setTemperature] = useAtom(temperatureAtom)
 
+  const currentInputText = inputTexts[currentInputIndex] || ""
   const currentOutputText = outputTexts[currentOutputIndex] || ""
+
+  const handleInputChange = (value: string) => {
+    if (currentInputIndex === -1) {
+      setInputTexts([value])
+      setCurrentInputIndex(0)
+    } else {
+      setInputTexts(prev => {
+        const updated = [...prev]
+        updated[currentInputIndex] = value
+        return updated
+      })
+    }
+  }
+
+  const handleNavigateInput = (direction: 'prev' | 'next') => {
+    if (direction === 'prev' && currentInputIndex > 0) {
+      setCurrentInputIndex(currentInputIndex - 1)
+    } else if (direction === 'next' && currentInputIndex < inputTexts.length - 1) {
+      setCurrentInputIndex(currentInputIndex + 1)
+    }
+  }
 
   const handleNavigateOutput = (direction: 'prev' | 'next') => {
     if (direction === 'prev' && currentOutputIndex > 0) {
@@ -31,6 +54,11 @@ export default function AIEditor() {
   const handleClearHistory = () => {
     setOutputTexts([])
     setCurrentOutputIndex(-1)
+  }
+
+  const handleClearInputHistory = () => {
+    setInputTexts([])
+    setCurrentInputIndex(-1)
   }
 
   async function handleAction(inputTextParam?: string) {
@@ -89,21 +117,27 @@ export default function AIEditor() {
 
           <EditorActions
             isProcessing={isProcessing}
-            inputText={inputText}
+            inputText={currentInputText}
             onAction={handleAction}
           />
 
           <EditorArea
-            inputText={inputText}
+            inputText={currentInputText}
             outputText={currentOutputText}
             apiKey={apiKey}
-            onInputChange={setInputText}
+            onInputChange={handleInputChange}
+            onNavigateInput={handleNavigateInput}
             onNavigateOutput={handleNavigateOutput}
             onClearHistory={handleClearHistory}
+            onClearInputHistory={handleClearInputHistory}
             canNavigatePrev={currentOutputIndex > 0}
             canNavigateNext={currentOutputIndex < outputTexts.length - 1}
+            canInputNavigatePrev={currentInputIndex > 0}
+            canInputNavigateNext={currentInputIndex < inputTexts.length - 1}
             outputCount={outputTexts.length}
             currentOutputIndex={currentOutputIndex}
+            inputCount={inputTexts.length}
+            currentInputIndex={currentInputIndex}
           />
         </div>
       </div>
