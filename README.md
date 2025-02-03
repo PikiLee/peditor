@@ -1,50 +1,76 @@
-# React + TypeScript + Vite
+# PEditor - AI-Powered Text Editor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PEditor is a modern, AI-powered text editor built with React, TypeScript, and Vite. It provides an intuitive interface for processing text using various AI models, with real-time streaming responses and customizable settings.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🤖 AI-powered text processing with OpenAI models
+- 🌓 Dark/Light mode support with system theme detection
+- ⚡️ Real-time streaming responses
+- 🎛️ Customizable AI parameters (temperature, model selection)
+- 📝 Multi-text input/output support
+- 🎨 Modern UI with Radix UI components and Tailwind CSS
+- 🔒 Secure API key management
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- React 18.3
+- TypeScript
+- Vite
+- Tailwind CSS
+- Radix UI Components
+- Jotai for state management
+- OpenAI API integration
 
-- Configure the top-level `parserOptions` property like this:
+## Getting Started
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Prerequisites
+
+- Node.js (Latest LTS version recommended)
+- pnpm (v9.14.4 or higher)
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/yourusername/peditor.git
+cd peditor
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Install dependencies:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+pnpm install
 ```
+
+3. Start the development server:
+
+```bash
+pnpm dev
+```
+
+4. Build for production:
+
+```bash
+pnpm build
+```
+
+## Usage
+
+1. Enter your OpenAI API key in the settings panel
+2. Type or paste your text in the input area
+3. Adjust the AI model and temperature settings as needed
+4. Click the process button to generate AI-powered text transformations
+5. View and manage multiple outputs in the output area
+
+## Development
+
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Run ESLint
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
