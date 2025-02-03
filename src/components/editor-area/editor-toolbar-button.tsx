@@ -2,6 +2,7 @@ import { forwardRef } from "react"
 import { ComponentProps } from "react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { cn } from "@/lib/utils"
 
 interface IEditorToolbarButton extends ComponentProps<typeof Button> {
   tooltipContent: string
@@ -9,7 +10,7 @@ interface IEditorToolbarButton extends ComponentProps<typeof Button> {
 }
 
 export const EditorToolbarButton = forwardRef<HTMLButtonElement, IEditorToolbarButton>(
-  ({ tooltipContent, icon, ...props }, ref) => {
+  ({ tooltipContent, icon, className, ...props }, ref) => {
     return (
       <Tooltip>
         <TooltipTrigger asChild>
@@ -17,7 +18,7 @@ export const EditorToolbarButton = forwardRef<HTMLButtonElement, IEditorToolbarB
             ref={ref}
             variant="ghost"
             size="sm"
-            className="h-8 px-2"
+            className={cn("h-8 px-2", className)}
             {...props}
           >
             {icon}
