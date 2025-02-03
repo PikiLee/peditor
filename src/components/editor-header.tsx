@@ -7,7 +7,7 @@ interface IEditorHeader extends ComponentProps<"div"> {
 }
 
 export const EditorHeader = forwardRef<HTMLDivElement, IEditorHeader>(
-  ({ title = "P AI Editor", className, ...props }, ref) => {
+  ({ title = "PEditor", className, ...props }, ref) => {
     return (
       <div 
         ref={ref}
