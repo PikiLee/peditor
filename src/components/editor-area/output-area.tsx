@@ -2,11 +2,11 @@ import { forwardRef } from "react"
 import { ComponentProps } from "react"
 import { cn } from "@/lib/utils"
 import { AlertCircle, Copy, ChevronLeft, ChevronRight, Trash2 } from "lucide-react"
-import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { EditorToolbarButton } from "./editor-toolbar-button"
 import { useAtom } from "jotai"
 import { apiKeyAtom, outputTextsAtom, currentOutputIndexAtom } from "@/store/settings"
+import { mdRenderer } from "@/lib/md"
 
 interface IOutputArea {
   onCopy: (text: string, type: "input" | "output") => void
@@ -85,12 +85,9 @@ export const OutputArea = forwardRef<HTMLDivElement, IOutputArea & Omit<Componen
           </Alert>
         )}
         <div className="h-[calc(100%-2rem)]">
-          <Textarea
-            placeholder="AI generated text will appear here..."
-            className="h-full min-h-[400px] resize-none"
-            value={outputText}
-            readOnly
-          />
+          <div className="h-full min-h-[400px] resize-none prose prose-md text-foreground [&>div>p:first-child]:mt-0 border rounded-md border-input bg-background p-3">
+            <div dangerouslySetInnerHTML={{ __html: mdRenderer.render(outputText) }} />
+          </div>
         </div>
       </div>
     )

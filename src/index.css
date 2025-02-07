@@ -66,3 +66,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+.hljs {
+  overflow-x: auto;
+  border-radius: 0.4rem;
+  padding: 1rem;
+  position: relative;
+  background-color: rgb(241, 245, 249) !important;
+}
